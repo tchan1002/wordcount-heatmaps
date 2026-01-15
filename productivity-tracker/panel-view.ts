@@ -62,8 +62,8 @@ export class PanelView {
 
     this.container.appendChild(contentWrapper);
 
-    // Append to the target container
-    targetContainer.appendChild(this.container);
+    // Append to the content container
+    contentEl.appendChild(this.container);
 
     // Render initial chart
     this.renderChart();
