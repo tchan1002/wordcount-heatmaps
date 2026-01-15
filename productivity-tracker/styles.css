@@ -1,0 +1,315 @@
+/* Productivity Tracker Panel */
+.productivity-tracker-panel {
+  position: relative;
+  width: 100%;
+  margin-top: 20px;
+  border-top: 1px solid var(--background-modifier-border);
+  background-color: var(--background-primary);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* Panel Header */
+.productivity-tracker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: var(--background-secondary);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.productivity-tracker-header:hover {
+  background-color: var(--background-modifier-hover);
+}
+
+.productivity-tracker-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-normal);
+}
+
+.productivity-tracker-toggle {
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.productivity-tracker-toggle:hover {
+  color: var(--text-normal);
+}
+
+/* Panel Content */
+.productivity-tracker-content {
+  padding: 16px;
+  transition: all 0.3s ease;
+}
+
+.productivity-tracker-panel.is-collapsed .productivity-tracker-content {
+  display: none;
+}
+
+/* Controls */
+.productivity-tracker-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.productivity-tracker-view-toggle {
+  display: flex;
+  gap: 8px;
+}
+
+.productivity-tracker-btn {
+  padding: 6px 14px;
+  font-size: 13px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 6px;
+  background-color: var(--background-primary);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.productivity-tracker-btn:hover {
+  background-color: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+
+.productivity-tracker-btn.is-active {
+  background-color: var(--interactive-accent);
+  color: var(--text-on-accent);
+  border-color: var(--interactive-accent);
+}
+
+.productivity-tracker-btn.is-active:hover {
+  background-color: var(--interactive-accent-hover);
+}
+
+/* Lookback Selector */
+.productivity-tracker-lookback {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.productivity-tracker-select {
+  padding: 6px 10px;
+  font-size: 13px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 6px;
+  background-color: var(--background-primary);
+  color: var(--text-normal);
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.productivity-tracker-select:hover {
+  border-color: var(--interactive-accent);
+}
+
+.productivity-tracker-select:focus {
+  outline: none;
+  border-color: var(--interactive-accent);
+  box-shadow: 0 0 0 2px rgba(var(--interactive-accent-rgb), 0.2);
+}
+
+/* Chart Container */
+.productivity-tracker-chart-container {
+  position: relative;
+  height: 280px;
+  width: 100%;
+}
+
+.productivity-tracker-chart {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Empty State */
+.productivity-tracker-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: var(--text-muted);
+}
+
+.productivity-tracker-empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.productivity-tracker-empty-text {
+  font-size: 14px;
+  text-align: center;
+  max-width: 300px;
+  line-height: 1.5;
+}
+
+/* Settings Validation */
+.productivity-tracker-folder-validation {
+  margin-top: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  border-radius: 4px;
+  display: none;
+}
+
+.productivity-tracker-folder-validation:not(:empty) {
+  display: block;
+}
+
+.productivity-tracker-folder-validation.is-success {
+  color: var(--text-success);
+  background-color: rgba(var(--color-green-rgb), 0.1);
+}
+
+.productivity-tracker-folder-validation.is-error {
+  color: var(--text-error);
+  background-color: rgba(var(--color-red-rgb), 0.1);
+}
+
+.productivity-tracker-folder-validation.is-warning {
+  color: var(--text-warning);
+  background-color: rgba(var(--color-yellow-rgb), 0.1);
+}
+
+/* Input validation */
+input.is-invalid {
+  border-color: var(--text-error) !important;
+}
+
+/* Modal styles (for clear data confirmation) */
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-container .modal-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-container .modal {
+  position: relative;
+  background-color: var(--background-primary);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modal-container .modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text-normal);
+}
+
+.modal-container .modal-content {
+  margin-bottom: 20px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.modal-container .modal-content p {
+  margin: 0 0 8px 0;
+}
+
+.modal-container .modal-button-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-container .modal-button-container button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--background-modifier-border);
+  background-color: var(--background-secondary);
+  color: var(--text-normal);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-container .modal-button-container button:hover {
+  background-color: var(--background-modifier-hover);
+}
+
+.modal-container .modal-button-container button.mod-cta {
+  background-color: var(--interactive-accent);
+  color: var(--text-on-accent);
+  border-color: var(--interactive-accent);
+}
+
+.modal-container .modal-button-container button.mod-cta:hover {
+  background-color: var(--text-error);
+  border-color: var(--text-error);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .productivity-tracker-controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .productivity-tracker-chart-container {
+    height: 240px;
+  }
+}
+
+/* Dark theme adjustments */
+.theme-dark .productivity-tracker-panel {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.theme-dark .productivity-tracker-header {
+  background-color: var(--background-secondary-alt);
+}
+
+/* Animation for panel expand/collapse */
+.productivity-tracker-panel {
+  transition: max-height 0.3s ease-out;
+}
+
+.productivity-tracker-content {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

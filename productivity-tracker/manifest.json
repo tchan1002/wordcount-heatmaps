@@ -1,0 +1,10 @@
+{
+  "id": "productivity-tracker",
+  "name": "Productivity Tracker",
+  "version": "1.0.0",
+  "minAppVersion": "1.0.0",
+  "description": "Track hourly writing patterns in your daily notes and visualize productivity zones",
+  "author": "Your Name",
+  "authorUrl": "",
+  "isDesktopOnly": false
+}
