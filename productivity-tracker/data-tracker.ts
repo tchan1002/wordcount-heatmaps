@@ -80,6 +80,18 @@ export class DataTracker {
   }
 
   /**
+   * Check if filename matches today's date (YYYY-MM-DD format)
+   */
+  private isFileFromToday(file: TFile): boolean {
+    const todayString = this.getCurrentDateString();
+    const fileBasename = file.basename; // filename without extension
+
+    // Check if filename matches today's date exactly
+    // Also support filenames that start with date (e.g., "2026-01-15 Meeting Notes")
+    return fileBasename === todayString || fileBasename.startsWith(todayString + " ");
+  }
+
+  /**
    * Process a file modification event
    */
   async processFileModification(file: TFile): Promise<{ delta: number; isFirstSaveOfDay: boolean } | null> {
@@ -87,6 +99,12 @@ export class DataTracker {
 
     // Check if file is in tracked folder
     if (!this.isFileInTrackedFolder(file, trackingFolder)) {
+      return null;
+    }
+
+    // Only track changes to today's daily note
+    // This prevents edits to old entries from affecting historical data
+    if (!this.isFileFromToday(file)) {
       return null;
     }
 
@@ -241,9 +259,15 @@ export class DataTracker {
 
   /**
    * Initialize word count cache for a file (used on file open)
+   * Only caches today's file to prevent old file edits from being tracked
    */
   async initializeFileCache(file: TFile): Promise<void> {
     if (!this.isFileInTrackedFolder(file, this.data.settings.trackingFolder)) {
+      return;
+    }
+
+    // Only initialize cache for today's file
+    if (!this.isFileFromToday(file)) {
       return;
     }
 
