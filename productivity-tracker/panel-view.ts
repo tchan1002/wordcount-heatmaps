@@ -29,22 +29,12 @@ export class PanelView {
    * Attach panel to a markdown view
    */
   attach(view: MarkdownView): void {
-    console.log("[ProductivityTracker] attach() called");
-
     // Remove existing panel if any
     this.detach();
 
-    // Get the content container - need to find the scrollable area
+    // Get the content container
     const contentEl = view.contentEl;
-    console.log("[ProductivityTracker] contentEl:", contentEl);
-    if (!contentEl) {
-      console.log("[ProductivityTracker] No contentEl found, returning");
-      return;
-    }
-
-    // We'll append to contentEl but position the panel as a sticky footer
-    const targetContainer = contentEl;
-    console.log("[ProductivityTracker] targetContainer:", targetContainer);
+    if (!contentEl) return;
 
     // Create panel container
     this.container = document.createElement("div");
