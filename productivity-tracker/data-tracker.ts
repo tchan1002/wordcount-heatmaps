@@ -40,11 +40,13 @@ export class DataTracker {
   }
 
   /**
-   * Get current hour bucket (00-23)
+   * Get current 30-minute bucket (e.g., "00:00", "00:30", "01:00", etc.)
    */
   getCurrentHourBucket(): string {
     const now = new Date();
-    return now.getHours().toString().padStart(2, "0");
+    const hour = now.getHours().toString().padStart(2, "0");
+    const halfHour = now.getMinutes() < 30 ? "00" : "30";
+    return `${hour}:${halfHour}`;
   }
 
   /**
@@ -156,12 +158,14 @@ export class DataTracker {
   }
 
   /**
-   * Create empty day data with all hour buckets initialized to 0
+   * Create empty day data with all 30-minute buckets initialized to 0
    */
   createEmptyDayData(): DailyHourData {
     const data: DailyHourData = {};
     for (let i = 0; i < 24; i++) {
-      data[i.toString().padStart(2, "0")] = 0;
+      const hour = i.toString().padStart(2, "0");
+      data[`${hour}:00`] = 0;
+      data[`${hour}:30`] = 0;
     }
     return data;
   }
@@ -182,16 +186,29 @@ export class DataTracker {
   }
 
   /**
+   * Get all bucket keys in order
+   */
+  private getBucketKeys(): string[] {
+    const keys: string[] = [];
+    for (let i = 0; i < 24; i++) {
+      const hour = i.toString().padStart(2, "0");
+      keys.push(`${hour}:00`);
+      keys.push(`${hour}:30`);
+    }
+    return keys;
+  }
+
+  /**
    * Calculate average data over multiple days
    */
   getAverageData(days: number): DailyHourData {
     const result = this.createEmptyDayData();
-    const counts: { [hour: string]: number } = {};
+    const counts: { [bucket: string]: number } = {};
+    const bucketKeys = this.getBucketKeys();
 
     // Initialize counts
-    for (let i = 0; i < 24; i++) {
-      const hour = i.toString().padStart(2, "0");
-      counts[hour] = 0;
+    for (const bucket of bucketKeys) {
+      counts[bucket] = 0;
     }
 
     // Get dates for the lookback window
@@ -203,21 +220,19 @@ export class DataTracker {
 
       const dayData = this.data.dailyData[dateString];
       if (dayData) {
-        for (let i = 0; i < 24; i++) {
-          const hour = i.toString().padStart(2, "0");
-          if (dayData[hour] !== 0) {
-            result[hour] += dayData[hour];
-            counts[hour]++;
+        for (const bucket of bucketKeys) {
+          if (dayData[bucket] !== undefined && dayData[bucket] !== 0) {
+            result[bucket] += dayData[bucket];
+            counts[bucket]++;
           }
         }
       }
     }
 
     // Calculate averages
-    for (let i = 0; i < 24; i++) {
-      const hour = i.toString().padStart(2, "0");
-      if (counts[hour] > 0) {
-        result[hour] = Math.round(result[hour] / counts[hour]);
+    for (const bucket of bucketKeys) {
+      if (counts[bucket] > 0) {
+        result[bucket] = Math.round(result[bucket] / counts[bucket]);
       }
     }
 
@@ -225,26 +240,31 @@ export class DataTracker {
   }
 
   /**
-   * Find peak hours from data
+   * Find peak time slots from data
    */
   findPeakHours(data: DailyHourData, topN: number = 3): string[] {
     const entries = Object.entries(data)
-      .map(([hour, value]) => ({ hour, value }))
+      .map(([bucket, value]) => ({ bucket, value }))
       .filter((e) => e.value > 0)
       .sort((a, b) => b.value - a.value)
       .slice(0, topN);
 
-    return entries.map((e) => this.formatHourLabel(parseInt(e.hour)));
+    return entries.map((e) => this.formatBucketLabel(e.bucket));
   }
 
   /**
-   * Format hour as readable label (e.g., "9am", "2pm")
+   * Format bucket as readable label (e.g., "9am", "9:30am", "2pm", "2:30pm")
    */
-  formatHourLabel(hour: number): string {
-    if (hour === 0) return "12am";
-    if (hour === 12) return "12pm";
-    if (hour < 12) return `${hour}am`;
-    return `${hour - 12}pm`;
+  formatBucketLabel(bucket: string): string {
+    const [hourStr, minStr] = bucket.split(":");
+    const hour = parseInt(hourStr);
+    const isHalfHour = minStr === "30";
+    const suffix = isHalfHour ? ":30" : "";
+
+    if (hour === 0) return `12${suffix}am`;
+    if (hour === 12) return `12${suffix}pm`;
+    if (hour < 12) return `${hour}${suffix}am`;
+    return `${hour - 12}${suffix}pm`;
   }
 
   /**

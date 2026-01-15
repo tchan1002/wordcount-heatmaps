@@ -24,27 +24,31 @@ export class ChartRenderer {
   private canvas: HTMLCanvasElement | null = null;
 
   /**
-   * Format hour labels for x-axis
+   * Format 30-minute bucket labels for x-axis
    */
   private getHourLabels(): string[] {
     const labels: string[] = [];
     for (let i = 0; i < 24; i++) {
+      // On-the-hour label
       if (i === 0) labels.push("12am");
       else if (i === 12) labels.push("12pm");
       else if (i < 12) labels.push(`${i}am`);
       else labels.push(`${i - 12}pm`);
+      // Half-hour label (empty to reduce clutter)
+      labels.push("");
     }
     return labels;
   }
 
   /**
-   * Convert DailyHourData to array of values
+   * Convert DailyHourData to array of values (48 half-hour buckets)
    */
   private dataToArray(data: DailyHourData): number[] {
     const values: number[] = [];
     for (let i = 0; i < 24; i++) {
       const hour = i.toString().padStart(2, "0");
-      values.push(data[hour] || 0);
+      values.push(data[`${hour}:00`] || 0);
+      values.push(data[`${hour}:30`] || 0);
     }
     return values;
   }
