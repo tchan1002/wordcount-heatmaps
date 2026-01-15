@@ -1,13 +1,17 @@
 /* Productivity Tracker Panel */
 .productivity-tracker-panel {
-  position: relative;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   width: 100%;
-  margin-top: 20px;
+  max-width: 100%;
   border-top: 1px solid var(--background-modifier-border);
   background-color: var(--background-primary);
-  border-radius: 8px;
   overflow: hidden;
   transition: all 0.3s ease;
+  z-index: 10;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Panel Header */
@@ -194,7 +198,7 @@ input.is-invalid {
 }
 
 /* Modal styles (for clear data confirmation) */
-.modal-container {
+.productivity-tracker-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -206,7 +210,7 @@ input.is-invalid {
   justify-content: center;
 }
 
-.modal-container .modal-bg {
+.productivity-tracker-modal .modal-bg {
   position: absolute;
   top: 0;
   left: 0;
@@ -215,7 +219,7 @@ input.is-invalid {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-.modal-container .modal {
+.productivity-tracker-modal .modal {
   position: relative;
   background-color: var(--background-primary);
   border-radius: 12px;
@@ -225,30 +229,30 @@ input.is-invalid {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
-.modal-container .modal-title {
+.productivity-tracker-modal .modal-title {
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 16px;
   color: var(--text-normal);
 }
 
-.modal-container .modal-content {
+.productivity-tracker-modal .modal-content {
   margin-bottom: 20px;
   color: var(--text-muted);
   line-height: 1.5;
 }
 
-.modal-container .modal-content p {
+.productivity-tracker-modal .modal-content p {
   margin: 0 0 8px 0;
 }
 
-.modal-container .modal-button-container {
+.productivity-tracker-modal .modal-button-container {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
 }
 
-.modal-container .modal-button-container button {
+.productivity-tracker-modal .modal-button-container button {
   padding: 8px 16px;
   border-radius: 6px;
   border: 1px solid var(--background-modifier-border);
@@ -258,17 +262,17 @@ input.is-invalid {
   transition: all 0.2s ease;
 }
 
-.modal-container .modal-button-container button:hover {
+.productivity-tracker-modal .modal-button-container button:hover {
   background-color: var(--background-modifier-hover);
 }
 
-.modal-container .modal-button-container button.mod-cta {
+.productivity-tracker-modal .modal-button-container button.mod-cta {
   background-color: var(--interactive-accent);
   color: var(--text-on-accent);
   border-color: var(--interactive-accent);
 }
 
-.modal-container .modal-button-container button.mod-cta:hover {
+.productivity-tracker-modal .modal-button-container button.mod-cta:hover {
   background-color: var(--text-error);
   border-color: var(--text-error);
 }

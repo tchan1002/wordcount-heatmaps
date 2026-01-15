@@ -112,18 +112,27 @@ export default class ProductivityTrackerPlugin extends Plugin {
   private handleActiveLeafChange(view: MarkdownView): void {
     const file = view.file;
 
+    console.log("[ProductivityTracker] handleActiveLeafChange called");
+    console.log("[ProductivityTracker] file:", file?.path);
+    console.log("[ProductivityTracker] trackingFolder:", this.settings.trackingFolder);
+
     // Check if file is in tracked folder
     if (
       file &&
       this.dataTracker &&
       this.dataTracker["isFileInTrackedFolder"](file, this.settings.trackingFolder)
     ) {
+      console.log("[ProductivityTracker] File IS in tracked folder, attaching panel");
       // Attach panel if not already attached to this view
       if (this.activeView !== view) {
         this.activeView = view;
         this.panelView?.attach(view);
+        console.log("[ProductivityTracker] Panel attached");
+      } else {
+        console.log("[ProductivityTracker] Panel already attached to this view");
       }
     } else {
+      console.log("[ProductivityTracker] File NOT in tracked folder, detaching panel");
       // Detach panel if file is not in tracked folder
       this.panelView?.detach();
       this.activeView = null;

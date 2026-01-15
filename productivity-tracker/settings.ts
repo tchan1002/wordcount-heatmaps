@@ -145,7 +145,7 @@ export class ProductivityTrackerSettingTab extends PluginSettingTab {
   private async confirmClearData(): Promise<boolean> {
     return new Promise((resolve) => {
       const modal = document.createElement("div");
-      modal.classList.add("modal-container");
+      modal.classList.add("productivity-tracker-modal");
       modal.innerHTML = `
         <div class="modal-bg"></div>
         <div class="modal">
