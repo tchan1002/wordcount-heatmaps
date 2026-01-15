@@ -80,15 +80,23 @@ export class DataTracker {
   }
 
   /**
+   * Extract date string from filename (YYYY-MM-DD format)
+   * Returns null if filename doesn't start with a valid date
+   */
+  getDateFromFile(file: TFile): string | null {
+    const fileBasename = file.basename;
+    // Match YYYY-MM-DD at the start of filename
+    const dateMatch = fileBasename.match(/^(\d{4}-\d{2}-\d{2})/);
+    return dateMatch ? dateMatch[1] : null;
+  }
+
+  /**
    * Check if filename matches today's date (YYYY-MM-DD format)
    */
   private isFileFromToday(file: TFile): boolean {
     const todayString = this.getCurrentDateString();
-    const fileBasename = file.basename; // filename without extension
-
-    // Check if filename matches today's date exactly
-    // Also support filenames that start with date (e.g., "2026-01-15 Meeting Notes")
-    return fileBasename === todayString || fileBasename.startsWith(todayString + " ");
+    const fileDate = this.getDateFromFile(file);
+    return fileDate === todayString;
   }
 
   /**

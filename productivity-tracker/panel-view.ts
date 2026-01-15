@@ -12,6 +12,7 @@ export class PanelView {
   private currentView: ChartView = "today";
   private isCollapsed: boolean;
   private onSettingsChange: (collapsed: boolean) => void;
+  private displayDate: string | null = null; // The date to display (from filename)
 
   constructor(
     dataTracker: DataTracker,
@@ -27,10 +28,15 @@ export class PanelView {
 
   /**
    * Attach panel to a markdown view
+   * @param view The markdown view to attach to
+   * @param dateString The date to display data for (from filename)
    */
-  attach(view: MarkdownView): void {
+  attach(view: MarkdownView, dateString: string | null): void {
     // Remove existing panel if any
     this.detach();
+
+    // Store the display date
+    this.displayDate = dateString;
 
     // Get the content container
     const contentEl = view.contentEl;
@@ -111,6 +117,20 @@ export class PanelView {
   }
 
   /**
+   * Format date for display (e.g., "Jan 15" or "Today")
+   */
+  private formatDateLabel(dateString: string | null): string {
+    if (!dateString) return "Today";
+
+    const today = new Date().toISOString().split("T")[0];
+    if (dateString === today) return "Today";
+
+    // Format as "Jan 15"
+    const date = new Date(dateString + "T00:00:00");
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  }
+
+  /**
    * Create view controls (Today / Trend toggle)
    */
   private createControls(): HTMLElement {
@@ -121,8 +141,9 @@ export class PanelView {
     const viewToggle = document.createElement("div");
     viewToggle.classList.add("productivity-tracker-view-toggle");
 
+    const dateLabel = this.formatDateLabel(this.displayDate);
     const todayBtn = document.createElement("button");
-    todayBtn.textContent = "Today";
+    todayBtn.textContent = dateLabel;
     todayBtn.classList.add("productivity-tracker-btn");
     if (this.currentView === "today") {
       todayBtn.classList.add("is-active");
@@ -225,16 +246,22 @@ export class PanelView {
   renderChart(): void {
     if (!this.chartContainer || this.isCollapsed) return;
 
-    // Check if we have data
-    if (!this.dataTracker.hasData()) {
-      this.chartRenderer.renderEmptyState(this.chartContainer);
-      return;
-    }
+    // Get data for the display date (or today if not set)
+    const dateToShow = this.displayDate || this.dataTracker.getCurrentDateString();
 
     if (this.currentView === "today") {
-      const data = this.dataTracker.getTodayData();
+      const data = this.dataTracker.getDayData(dateToShow) || this.dataTracker["createEmptyDayData"]();
+
+      // Check if this date has any data
+      const hasDataForDate = Object.values(data).some(v => v !== 0);
+      if (!hasDataForDate) {
+        this.chartRenderer.renderEmptyState(this.chartContainer);
+        return;
+      }
+
       this.chartRenderer.render(this.chartContainer, data, {
         view: "today",
+        displayDate: dateToShow,
       });
     } else {
       const data = this.dataTracker.getAverageData(this.settings.lookbackWindow);

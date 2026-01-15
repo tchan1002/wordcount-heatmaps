@@ -121,7 +121,9 @@ export default class ProductivityTrackerPlugin extends Plugin {
       // Attach panel if not already attached to this view
       if (this.activeView !== view) {
         this.activeView = view;
-        this.panelView?.attach(view);
+        // Get the date from the filename to display that day's data
+        const fileDate = this.dataTracker.getDateFromFile(file);
+        this.panelView?.attach(view, fileDate);
       }
     } else {
       // Detach panel if file is not in tracked folder

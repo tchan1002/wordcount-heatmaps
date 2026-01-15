@@ -16,6 +16,7 @@ export interface ChartOptions {
   view: ChartView;
   lookbackDays?: number;
   peakHours?: string[];
+  displayDate?: string; // Date being displayed (YYYY-MM-DD)
 }
 
 export class ChartRenderer {
@@ -102,7 +103,7 @@ export class ChartRenderer {
     data: DailyHourData,
     options: ChartOptions
   ): void {
-    const { view, lookbackDays, peakHours } = options;
+    const { view, lookbackDays, peakHours, displayDate } = options;
     const isTrend = view === "trend";
 
     // Create canvas if needed
@@ -119,9 +120,24 @@ export class ChartRenderer {
     const values = this.dataToArray(data);
 
     // Build title
-    let title = isTrend
-      ? `${lookbackDays || 7}-Day Average Writing Pattern`
-      : "Today's Writing Activity";
+    let title: string;
+    if (isTrend) {
+      title = `${lookbackDays || 7}-Day Average Writing Pattern`;
+    } else {
+      // Format date for title
+      const today = new Date().toISOString().split("T")[0];
+      if (!displayDate || displayDate === today) {
+        title = "Today's Writing Activity";
+      } else {
+        const date = new Date(displayDate + "T00:00:00");
+        const formatted = date.toLocaleDateString("en-US", {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+        });
+        title = `Writing Activity - ${formatted}`;
+      }
+    }
 
     // Add peak hours annotation for trend view
     if (isTrend && peakHours && peakHours.length > 0) {
