@@ -213,42 +213,22 @@ export class ChartRenderer {
       },
     };
 
-    // Create chart
-    this.chart = new Chart(ctx, config);
+    // Set colors directly in config to avoid recursion issues
+    const borderColor = isTrend ? "rgba(139, 92, 246, 1)" : "rgba(59, 130, 246, 1)";
+    const bgColor = isTrend ? "rgba(139, 92, 246, 0.1)" : "rgba(59, 130, 246, 0.1)";
+    const pointColor = isTrend ? "rgba(139, 92, 246, 1)" : "rgba(59, 130, 246, 1)";
 
-    // Apply gradients after chart is created (needed for chartArea)
-    this.chart.options.plugins = this.chart.options.plugins || {};
-
-    // Update dataset colors with gradients
-    const updateGradients = () => {
-      if (!this.chart || !this.chart.chartArea) return;
-
-      const dataset = this.chart.data.datasets[0] as unknown as LineDataset;
-      dataset.borderColor = this.createGradient(ctx, this.chart.chartArea, isTrend);
-      dataset.backgroundColor = this.createFillGradient(ctx, this.chart.chartArea, isTrend);
-      dataset.pointBackgroundColor = isTrend
-        ? "rgba(139, 92, 246, 1)"
-        : "rgba(59, 130, 246, 1)";
-      dataset.pointBorderColor = "#ffffff";
-      dataset.pointBorderWidth = 2;
-
-      this.chart.update("none");
+    config.data.datasets[0] = {
+      ...config.data.datasets[0],
+      borderColor: borderColor,
+      backgroundColor: bgColor,
+      pointBackgroundColor: pointColor,
+      pointBorderColor: "#ffffff",
+      pointBorderWidth: 2,
     };
 
-    // Set initial solid colors, then update with gradients
-    const dataset = this.chart.data.datasets[0] as unknown as LineDataset;
-    dataset.borderColor = isTrend ? "rgba(139, 92, 246, 1)" : "rgba(59, 130, 246, 1)";
-    dataset.backgroundColor = isTrend
-      ? "rgba(139, 92, 246, 0.1)"
-      : "rgba(59, 130, 246, 0.1)";
-    dataset.pointBackgroundColor = isTrend
-      ? "rgba(139, 92, 246, 1)"
-      : "rgba(59, 130, 246, 1)";
-    dataset.pointBorderColor = "#ffffff";
-    dataset.pointBorderWidth = 2;
-
-    // Update with gradients on next frame
-    requestAnimationFrame(updateGradients);
+    // Create chart
+    this.chart = new Chart(ctx, config);
   }
 
   /**
